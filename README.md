@@ -55,11 +55,16 @@ This was performed in 2 steps. First, we fit a population-genetics model of tumo
  $`d=\sum_{i \in m_\mathrm{MRCA,exp}} w_i  \frac{(I_{\mathrm{MRCA,sim},i} -I_{\mathrm{MRCA,exp},i})^2}{\Delta I_{\mathrm{MRCA,exp},i}^2}+\frac{(I_{\mathrm{ECA,sim},i} -I_{\mathrm{ECA,exp},i})^2}{\Delta I_{\mathrm{ECA,exp},i}^2 }+\frac{(I_\mathrm{MRCA,sim,ten years} -10^{-5})}{(10^{-4} )^2}`$,
 where the weights were chosen as
 ```math
-w_i=\begin{cases}{10, \mathrm{if} \tilde{m}_\mathrm{MRCA} \le 0.2/10^6 \\
-1, \mathrm{if} \tilde{m}_\mathrm{MRCA} > 0.2/10^6
+w_i=\begin{cases}
+10, \quad \mathrm{if} \quad \tilde{m}_\mathrm{MRCA} \le 0.2/10^6 \\
+1, \quad \mathrm{if} \quad \tilde{m}_\mathrm{MRCA} > 0.2/10^6,
 \end{cases}
 ```
-to enforce good fits for the initial expansion phase. The experimental incidences were computed as $`I_{\mathrm{MRCA,exp},i} =\sum_{\tilde{m}_\mathrm{MRCA,exp}} <i;i \in \tilde{m}_\mathrm{MRCA,exp}`$, and uncertainties were estimated to $`\Delta I_{\mathrm{MRCA,exp},i} =\sum_{\tilde{m} _{\mathrm{MRCA,exp},l}<i -\sum_{\tilde{m}_{\mathrm{MRCA, exp},u}}<i;i \in \tilde{m}_\mathrm{MRCA,exp}`$, where `$\tilde{m}_{\mathrm{MRCA,exp},l}`$ and `$\tilde{m}_{\mathrm{MRCA,exp},u}`$ denote the lower and upper bounds of the 95% confidence interval of `$\tilde{m}_{\mathrm{MRCA,exp}}`$, respectively. Incidences and uncertainties of the ECA, $`I_{\mathrm{ECA,exp},i}`$ were computed in analogy. 
+to enforce good fits for the initial expansion phase. The experimental incidences were computed as 
+```math
+I_{\mathrm{MRCA,exp},i} =\sum_{\tilde{m}_\mathrm{MRCA,exp}} < i ; i \in \tilde{m}_\mathrm{MRCA,exp},
+```
+and uncertainties were estimated to $`\Delta I_{\mathrm{MRCA,exp},i} =\sum_{\tilde{m} _{\mathrm{MRCA,exp},l}<i -\sum_{\tilde{m}_{\mathrm{MRCA, exp},u}}<i;i \in \tilde{m}_\mathrm{MRCA,exp}`$, where `$\tilde{m}_{\mathrm{MRCA,exp},l}`$ and `$\tilde{m}_{\mathrm{MRCA,exp},u}`$ denote the lower and upper bounds of the 95% confidence interval of `$\tilde{m}_{\mathrm{MRCA,exp}}`$, respectively. Incidences and uncertainties of the ECA, $`I_{\mathrm{ECA,exp},i}`$ were computed in analogy. 
 **DONE**
 
 
