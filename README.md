@@ -76,10 +76,10 @@ In the second step, we fit a model of tumor growth to the subclonal tail of 39 G
 
 1.	Compute summary statistics from measured data:
 
-**FOR** each copy number state $1\lek\le4$:__
- **IF** $`g_k<10^8 \mathrm{bp}`$ , where $g_k$ is the number of bases with copy number $k$ in the genome:__
-  **NEXT**__
- **ELSE:**__
+**FOR** each copy number state $1\le k \le4$:<br />
+\quad **IF** $`g_k<10^8 \mathrm{bp}`$ , where $g_k$ is the number of bases with copy number $k$ in the genome:<br />
+\quad\quad **NEXT**<br />
+\quad **ELSE:**<br />
 - Compute the total number of clonal mutations as the sum of the different clonal VAF peaks constituted by amplified and non-amplified clonal mutations. Denoting with $\hat{C_k}$ the average coverage from all mutations falling on segments with copy number $k$, we classified mutations as amplified clonal if $`\frac{Q_{l-1}^0.95}/\hat{C_k} < \mathrm{VAF}_k \le \frac{Q_l^0.95}{\hat{C_k}}`$,  where $`Q_l^0.95`$ is the 95% quantile of a binomial distribution with success probability \frac{\rho l}{\zeta}$, where $\rho$ is the purity, $\zeta$ is the average copy number $l$ is the B-allele count.
 - Merge these mutations with those of the non-amplified clonal peak by multiplying their frequencies with $l/k$ and adding them $l$ times. 	
 - Compute the cumulative mutation counts of the measured data, $`F_{k,\mathrm{exp}}(f) = \sum \mathrm{VAF}_k>f `$, where $f$ runs from 0.05 to 1 in steps of size 0.05 and  extrapolate them to the whole genome by multiplication with \frac{\sum_k g_k}{g_k}.
@@ -87,13 +87,13 @@ In the second step, we fit a model of tumor growth to the subclonal tail of 39 G
 
 2. Fit the model to the data: 
 
-**FOR EACH** optimization step:__
-	Sample values for $`\mu, \frac{\delta_\mathrm{T}}{\lambda_\mathrm{T}}, n_\mathrm{clonal}$ and $\Delta_\rho$ from the prior distributions given in Extended Data Table 7, where $\Delta_\rho$ is a correction factor to the purity estimate by ACEseq.__
+**FOR EACH** optimization step:<br />
+-Sample values for $`\mu, \frac{\delta_\mathrm{T}}{\lambda_\mathrm{T}}, n_\mathrm{clonal}$ and $\Delta_\rho$ from the prior distributions given in Extended Data Table 7, where $\Delta_\rho$ is a correction factor to the purity estimate by ACEseq.<br />
 	**FOR EACH** copy number state $1\le k \le 4$:__
-		**IF** $g_k<10^8$ bp, where $g_k$ is the length of the genome at copy number $k$:__
-			**NEXT**__
-		**ELSE:**__
-- Determine $n_(f,k)$ from equation (8), assuming a tumor size of $10^9$ cells at diagnosis, and evaluating equation (8) in bins of size 0.05 at the lower limit:
+		**IF** $g_k<10^8$ bp, where $g_k$ is the length of the genome at copy number $k$:<br />
+			**NEXT**<br />
+		**ELSE:** <br />
+			- Determine $n_(f,k)$ from equation (8), assuming a tumor size of $10^9$ cells at diagnosis, and evaluating equation (8) in bins of size 0.05 at the lower limit:
 ```math
 n_{f,k}\approx
 \begin{cases}
@@ -102,10 +102,10 @@ n_{f,k}\approx
 \end{cases}
 ```
 where $`n_\mathrm{clonal}`$  is the number of clonal variants per haploid genome already present in the tumor’s MRCA.
-- Sample for each mutation a sequencing coverage $C_k$  according to $Pois(\hat{C_k})$, where $\hat{C_k}$ is the average coverage at copy number $k$ in the data.
-- Sample for mutation a VAF according to a Binomial distribution with $C_k$ draws and success probability $\frac{f \min{\rho+\Delta_\rho,1}}{\zeta}$, where $\rho$ is the tumor cell content estimated by ACEseq, $\Delta_\rho$ is a correction factor for the purity estimate, and $\zeta$ is the average copy number at a locus with tumor copy number $k$ in the impure sample (equation (2)).
-- Compute the cumulative mutation counts, $`F_{k\mathrm{sim}}(f)= \sum \mathrm{VAF}_k>f `$, where $f$ runs from 0.05 to 1 in steps of size 0.05.
-- Compute the cost function:
+			- Sample for each mutation a sequencing coverage $C_k$  according to $Pois(\hat{C_k})$, where $\hat{C_k}$ is the average coverage at copy number $k$ in the data.
+			- Sample for mutation a VAF according to a Binomial distribution with $C_k$ draws and success probability $\frac{f \min{\rho+\Delta_\rho,1}}{\zeta}$, where $\rho$ is the tumor cell content estimated by ACEseq, $\Delta_\rho$ is a correction factor for the purity estimate, and $\zeta$ is the average copy number at a locus with tumor copy number $k$ in the impure sample (equation (2)).
+			- Compute the cumulative mutation counts, $`F_{k\mathrm{sim}}(f)= \sum \mathrm{VAF}_k>f `$, where $f$ runs from 0.05 to 1 in steps of size 0.05.
+			- Compute the cost function:
 ```math
 d=\sum_k \sum_f(F_{k,\mathrm{sim}} - F_{k,\mathrm{exp}})^2 \frac{g_k}{\sum_{k'}g_{k'}}
 ```
