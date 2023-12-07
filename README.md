@@ -88,7 +88,7 @@ In the second step, we fit a model of tumor growth to the subclonal tail of 39 G
 2. Fit the model to the data: 
 
 **FOR EACH** optimization step:<br />
--Sample values for $`\mu, \frac{\delta_\mathrm{T}}{\lambda_\mathrm{T}}, n_\mathrm{clonal}$ and $\Delta_\rho$ from the prior distributions given in Extended Data Table 7, where $\Delta_\rho$ is a correction factor to the purity estimate by ACEseq.<br />
+-Sample values for $`\mu, \frac{\delta_\mathrm{T}}{\lambda_\mathrm{T}}, n_\mathrm{clonal}`$ and $\Delta_\rho$ from the prior distributions given in Extended Data Table 7, where $\Delta_\rho$ is a correction factor to the purity estimate by ACEseq.<br />
 	**FOR EACH** copy number state $1\le k \le 4$:__
 		**IF** $g_k<10^8$ bp, where $g_k$ is the length of the genome at copy number $k$:<br />
 			**NEXT**<br />
@@ -97,8 +97,8 @@ In the second step, we fit a model of tumor growth to the subclonal tail of 39 G
 ```math
 n_{f,k}\approx
 \begin{cases}
-\sum_{i=f10^9}^{(f+0.05)10^9} S_k(i,\mu) + kn_\mathrm{clonal}, \quad \mathrm{if} \quad f = 0.95,\\
-\sum={i=f10^9}^{(f+0.05)10^9} S_k(i,\mu), \quad \mathrm{else},
+\sum_{i=f10^9}^{(f+0.05)10^9} S_k(i,\mu) + k\times n_\mathrm{clonal}, \quad \mathrm{if} \quad f = 0.95,\\
+\sum_{i=f10^9}^{(f+0.05)10^9} S_k(i,\mu), \quad \mathrm{else},
 \end{cases}
 ```
 where $`n_\mathrm{clonal}`$  is the number of clonal variants per haploid genome already present in the tumor’s MRCA.
@@ -109,7 +109,7 @@ where $`n_\mathrm{clonal}`$  is the number of clonal variants per haploid genome
 ```math
 d=\sum_k \sum_f(F_{k,\mathrm{sim}} - F_{k,\mathrm{exp}})^2 \frac{g_k}{\sum_{k'}g_{k'}}
 ```
-**DONE**
+**DONE** <br />
 **DONE**
 
 The model fits were integrated with the script [Compute_evolutionary_parameters_from_growth_model.R](WGS/PopGen/Compute_evolutionary_parameters_from_growth_model.R) and visualized with the script [Plot_dynamic_model.R](WGS/PopGen/Plot_dynamic_model.R), generating **Fig. 3e,f,g** and **Extended Data Fig. 3g**. Individual model fits to the subclonal tail can be visualized with the script [Plot_neutral_fit.R](WGS/PopGen/Plot_neutral_fit.R).
