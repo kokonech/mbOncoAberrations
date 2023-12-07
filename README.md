@@ -117,7 +117,7 @@ The model fits were integrated with the script [Compute_evolutionary_parameters_
 
 #### Oncoprint ####
 
-Significantly enriched large-scale CNVs were identified with the script [Gains_and_losses.R](\WGS/Oncoprint/Gains_and_losses.R) (which generates **Extended Data. Fig. 3h**). The regions were then integrated with the timing information in the script [CNV_timing_overview.R](WGS/Oncoprint/CNV_timing_overview.R). Finally, the script [Driver_mutations.R][WGS/Oncoprint/Driver_mutations.R] generates the oncoprint in **Fig. 3h** and the statistics shown in **Fig. 3i-l**.
+Significantly enriched large-scale CNVs were identified with the script [Gains_and_losses.R](\WGS/Oncoprint/Gains_and_losses.R) (which generates **Extended Data. Fig. 3h**). The regions were then integrated with the timing information in the script [CNV_timing_overview.R](WGS/Oncoprint/CNV_timing_overview.R). Finally, the script [Driver_mutations.R](WGS/Oncoprint/Driver_mutations.R) generates the oncoprint in **Fig. 3h** and the statistics shown in **Fig. 3i-l**.
 
 
 
