@@ -101,7 +101,7 @@ n_{f,k}\approx
 \sum={i=f10^9}^{(f+0.05)10^9} S_k(i,\mu), \quad \mathrm{else},
 \end{cases}
 ```
-	where n_\mathrm{clonal}  is the number of clonal variants per haploid genome already present in the tumor’s MRCA.
+where $`n_\mathrm{clonal}`$  is the number of clonal variants per haploid genome already present in the tumor’s MRCA.
 - Sample for each mutation a sequencing coverage $C_k$  according to $Pois(\hat{C_k})$, where $\hat{C_k}$ is the average coverage at copy number $k$ in the data.
 - Sample for mutation a VAF according to a Binomial distribution with $C_k$ draws and success probability $\frac{f \min{\rho+\Delta_\rho,1}}{\zeta}$, where $\rho$ is the tumor cell content estimated by ACEseq, $\Delta_\rho$ is a correction factor for the purity estimate, and $\zeta$ is the average copy number at a locus with tumor copy number $k$ in the impure sample (equation (2)).
 - Compute the cumulative mutation counts, $`F_{k\mathrm{sim}}(f)= \sum \mathrm{VAF}_k>f `$, where $f$ runs from 0.05 to 1 in steps of size 0.05.
@@ -109,8 +109,8 @@ n_{f,k}\approx
 ```math
 d=\sum_k \sum_f(F_{k,\mathrm{sim}} - F_{k,\mathrm{exp}})^2 \frac{g_k}{\sum_{k'}g_{k'}}
 ```
-	***DONE***
-***DONE***
+**DONE**
+**DONE**
 
 The model fits were integrated with the script [Compute_evolutionary_parameters_from_growth_model.R](WGS/PopGen/Compute_evolutionary_parameters_from_growth_model.R) and visualized with the script [Plot_dynamic_model.R](WGS/PopGen/Plot_dynamic_model.R), generating **Fig. 3e,f,g** and **Extended Data Fig. 3g**. Individual model fits to the subclonal tail can be visualized with the script [Plot_neutral_fit.R](WGS/PopGen/Plot_neutral_fit.R).
 
