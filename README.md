@@ -66,8 +66,9 @@ I_{\mathrm{MRCA,exp},i} =\sum_{\tilde{m}_\mathrm{MRCA,exp}} < i ; i \in \tilde{m
 ```
 and uncertainties were estimated to 
 ```math
-\Delta I_{\mathrm{MRCA,exp},i} =\sum_{\tilde{m} _{\mathrm{MRCA,exp},l}<i -\sum_{\tilde{m}_{\mathrm{MRCA, exp},u}}<i;i \in \tilde{m}_\mathrm{MRCA,exp},
-```where $`\tilde{m}_{\mathrm{MRCA,exp},l}`$ and $`\tilde{m}_{\mathrm{MRCA,exp},u}`$ denote the lower and upper bounds of the 95% confidence interval of $`\tilde{m}_{\mathrm{MRCA,exp}}`$, respectively. Incidences and uncertainties of the ECA, $`I_{\mathrm{ECA,exp},i}`$ were computed in analogy. 
+\Delta I_{\mathrm{MRCA,exp},i} =\sum_{\tilde{m} _{\mathrm{MRCA,exp},l} < i - \sum_{\tilde{m}_{\mathrm{MRCA, exp},u}} <i;i \in \tilde{m}_\mathrm{MRCA,exp},
+```
+where $`\tilde{m}_{\mathrm{MRCA,exp},l}`$ and $`\tilde{m}_{\mathrm{MRCA,exp},u}`$ denote the lower and upper bounds of the 95% confidence interval of $`\tilde{m}_{\mathrm{MRCA,exp}}`$, respectively. Incidences and uncertainties of the ECA, $`I_{\mathrm{ECA,exp},i}`$ were computed in analogy. 
 **DONE**
 
 
