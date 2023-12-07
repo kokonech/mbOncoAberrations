@@ -52,7 +52,7 @@ This was performed in 2 steps. First, we fit a population-genetics model of tumo
 - Determine the simulated incidence of the ECA at the experimentally determined mutation loads, $`I_{\mathrm{ECA,sim},i} = \sum \tilde{m}_\mathrm{ECA,sim} < i; i \in \tilde{m}_\mathrm{ECA,exp}`$, and the simulated incidence of the MRCA at the experimentally determined mutation loads,  $`I_{\mathrm{MRCA,sim},i} = \sum \tilde{m}_\mathrm{MRCA,sim} < i; i \in \tilde{m}_\mathrm{MRCA,exp}`$ (where "sim" and "exp" denote simulated and experimentally determined mutation densities).
 - Determine the simulated incidence of the MRCA at age 50 years,  $`I_\mathrm{MRCA,sim,ten years}`$ using the function `P.2nd.driver()` from NBevolution. 
 - Compute the cost function
- $`d=\sum_{i \in m_\mathrm{MRCA,exp}} w_i  ((I_{\mathrm{MRCA,sim},i} -I_{\mathrm{MRCA,exp},i})^2/(\Delta I_{\mathrm{MRCA,exp},i}^2 ))+(I_{\mathrm{ECA,sim},i} -I_{\mathrm{ECA,exp},i})^2/(\Delta I_{\mathrm{ECA,exp},i}^2 )+(I_\mathrm{MRCA,sim,ten years} -10^{-5})/(10^{-4} )^2`$,
+ $`d=\sum_{i \in m_\mathrm{MRCA,exp}} w_i  \frac{(I_{\mathrm{MRCA,sim},i} -I_{\mathrm{MRCA,exp},i})^2}{\Delta I_{\mathrm{MRCA,exp},i}^2}+\frac{(I_{\mathrm{ECA,sim},i} -I_{\mathrm{ECA,exp},i})^2}{\Delta I_{\mathrm{ECA,exp},i}^2 }+\frac{(I_\mathrm{MRCA,sim,ten years} -10^{-5})}{(10^{-4} )^2}`$,
 where the weights were chosen as
 ```math
 w_i=\begin{cases}{10, \mathrm{if} \tilde{m}_\mathrm{MRCA} \le 0.2/10^6 \\
