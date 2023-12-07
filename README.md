@@ -60,17 +60,54 @@ w_i=\begin{cases}
 1, \quad \mathrm{if} \quad \tilde{m}_\mathrm{MRCA} > 0.2/10^6,
 \end{cases}
 ```
-to enforce good fits for the initial expansion phase. The experimental incidences were computed as 
+ to enforce good fits for the initial expansion phase. The experimental incidences were computed as 
 ```math
 I_{\mathrm{MRCA,exp},i} =\sum_{\tilde{m}_\mathrm{MRCA,exp}} < i ; i \in \tilde{m}_\mathrm{MRCA,exp},
 ```
-and uncertainties were estimated to 
+ and uncertainties were estimated to 
 ```math
 \Delta I_{\mathrm{MRCA,exp},i} =\sum{\tilde{m}_{\mathrm{MRCA,exp},l} < i} - \sum{\tilde{m}_{\mathrm{MRCA,exp},u} < i}  ; i \in \tilde{m}_\mathrm{MRCA,exp},
 ```
-where $`\tilde{m}_{\mathrm{MRCA,exp},l}`$ and $`\tilde{m}_{\mathrm{MRCA,exp},u}`$ denote the lower and upper bounds of the 95% confidence interval of $`\tilde{m}_{\mathrm{MRCA,exp}}`$, respectively. Incidences and uncertainties of the ECA, $`I_{\mathrm{ECA,exp},i}`$ were computed in analogy. 
+ where $`\tilde{m}_{\mathrm{MRCA,exp},l}`$ and $`\tilde{m}_{\mathrm{MRCA,exp},u}`$ denote the lower and upper bounds of the 95% confidence interval of $`\tilde{m}_{\mathrm{MRCA,exp}}`$, respectively. Incidences and uncertainties of the ECA, $`I_{\mathrm{ECA,exp},i}`$ were computed in analogy. 
 
 **DONE**
+
+In the second step, we fit a model of tumor growth to the subclonal tail of 39 Group3/4 medulloblastomas with sufficient data quality. To reproduce this part, run [Neutral_fit_pre_clonal_and_clonal.py](WGS/PopGen/Neutral_fit_pre_clonal_and_clonal.py) in conjunction with [Mutation_accumulation_fit_pre_clonal_and_clonal.R](WGS/PopGen/Mutation_accumulation_fit_pre_clonal_and_clonal.R) and [Mutation_accumulation_exponential_growth.R](WGS/PopGen/Mutation_accumulation_exponential_growth.R). The fitting procedure encompasses the following steps:
+
+1.	Compute summary statistics from measured data:
+
+**FOR** each copy number state 1≤k≤4: 
+ **IF** $`g_k<10^8 \mathrm{bp}`$ , where $g_k$ is the number of bases with copy number $k$ in the genome:
+  **NEXT**
+ **ELSE:**
+  Compute the total number of clonal mutations as the sum of the different clonal VAF peaks constituted by amplified and non-amplified clonal mutations. Denoting with $\hat{C_k}$ the average coverage from all mutations falling on segments with copy number $k$, we classified mutations as amplified clonal if $`\frac{Q_{l-1}^0.95}/\hat{C_k} < \mathrm{VAF}_k \le \frac{Q_l^0.95}{\hat{C_k}}`$,  where $`Q_l^0.95`$ is the 95% quantile of a binomial distribution with success probability \frac{\rho l}{\zeta}$, where $\rho$ is the purity, $\zeta$ is the average copy number $l$ is the B-allele count. 
+ Merge these mutations with those of the non-amplified clonal peak by multiplying their frequencies with $l/k$ and adding them $l$ times. 	
+ Compute the cumulative mutation counts of the measured data, $`F_{k,\mathrm{exp}}(f) = \sum \mathrm{VAF}_k>f `$, where $f$ runs from 0.05 to 1 in steps of size 0.05 and  extrapolate them to the whole genome by multiplication with \frac{\sum_k g_k}{g_k}.
+**DONE**
+
+	Fit the model to the data: 
+
+FOR each optimization step:
+Sample values for μ, δ_T/λ_T ,n_"clonal"  and ∆_ρ from the prior distributions given in Extended Data Table 7, where ∆_ρ is a correction factor to the purity estimate by ACEseq.
+FOR each copy number state 1≤k≤4:
+IF g_k<10^8 "bp" , where g_k is the length of the genome at copy number k:
+NEXT
+ELSE:
+Determine n_(f,k ) from equation (8), assuming a tumor size of 109 cells at diagnosis, and evaluating equation (8) in bins of size 0.05 at the lower limit:
+			n_(f,k )≈{█(∑_(i=f10^9)^(〖(f+0.05)10〗^9)▒〖S_k (i,μ)+ 〖kn〗_"clonal" ,"if"  f=0.95〗@∑_(i=f10^9)^(〖(f+0.05)10〗^9)▒〖S_k (i,μ),〗  "else" )┤
+where n_"clonal"  is the number of clonal variants per haploid genome already present in the tumor’s MRCA.
+Sample for each mutation a sequencing coverage C_k  according to Pois((C_k ) ̂), where (C_k ) ̂ is the average coverage at copy number k in the data.
+Sample for mutation a VAF according to a Binomial distribution with C_k draws and success probability (f  min┬⁡〖(ρ+∆_ρ,1)〗)/ζ, where ρ is the tumor cell content estimated by ACEseq, ∆_ρ is a correction factor for the purity estimate, and ζ is the average copy number at a locus with tumor copy number k in the impure sample (equation (2)).
+Compute the cumulative mutation counts, F_(k,"sim" ) "(f)=" ∑▒〖〖"VAF" 〗_k>f〗, where f runs from 0.05 to 1 in steps of size 0.05.
+Compute the cost function:
+d=∑_k▒〖∑_f▒(F_(k,"sim" )-F_(k,"exp" ) )^2   g_k/(∑_k'▒g_k' )〗.	
+DONE
+DONE
+
+
+The model fits were visualized with the script [Plot_dynamic_model.R](WGS/PopGen/Plot_dynamic_model.R), generating 
+
+
 
 
 
