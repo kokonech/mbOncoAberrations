@@ -1,4 +1,4 @@
-This repository contains the souce code for the data analysis in the context of a study focused on investigation of oncogenic aberrations in medulloblastoma Group 3/4 brain tumors.
+This repository contains R/Python source code for the data analysis in the context of a study focused on investigation of oncogenic aberrations in medulloblastoma Group 3/4 brain tumors.
 The folders constructe based on the analysis of specific data types.
 
 ## Directory contents ##
