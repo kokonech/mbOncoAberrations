@@ -27,6 +27,21 @@ Merged samples processing (UMAPs): _mergeAtac.R_
 
 R session details: _sessionInfo.ATAC.txt_
 
+### scSpatial ###
+
+Analysis of single cell spatial RNA data obtained from the protocol Molecular Cartography of [Resolve Bioscience](https://resolvebiosciences.com/). 
+
+General per sample processing (filtering, normalization, visualziation): [resolveSeurat.R](scSpatial/resolveSeurat.R)
+
+Merged samples processing (UMAPs): [resolveMerged.R](scSpatial/resolveMerged.R)
+
+Transfer of the signals obtained from snRNA-seq data into spatial: [transferAnchorsPerSample.R](scSpatial/transferAnchorsPerSample.R)
+
+Additional processing with Giotto R package (neigbourhood, etc): 
+
+R session details: [sessionInfo.spatial.txt](scSpatial/sessionInfo.spatial.txt) 
+
+
 
 ### WGS ###
 
