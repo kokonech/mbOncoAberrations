@@ -7,25 +7,25 @@ The folders are constructed based on the analysis of specific data types.
 
 Analysis of single nuclei gene expression data.
 
-General processing (normalization, clustering, UMAP, output):  *processSnRNAseq.R*
+General processing (normalization, clustering, UMAP, output) per sample:  [processSnRNAseq.R](snRNAseq/processSnRNAseq.R)
 
-Merged samples processing (UMAPs, markers visualization): _mergeSnRNAseq.R_
+Merged samples processing (UMAPs, markers visualization): [mergeSnRNAseq.R](snRNAseq/mergeSnRNAseq.R)
 
-Copy number profiling: _runInferCNV_perSample.R_
+Copy number profiling per sample: [runInferCNV_perSample.R](snRNAseq/runInferCNV_perSample.R)
 
-Gene set varaince enrichment analysis: _runGsvaPerCell.R_
+Gene set varaince enrichment analysis per sample: [runGsvaPerCell.R](snRNAseq/runInferCNV_perSample.R)
 
-R session details: _sessionInfo.RNAseq.txt_
+R session details: [sessionInfo.RNAseq.txt](snRNAseq/sessionInfo.RNAseq.txt)
 
 ### snATACseq ###
 
 Analysis of single nuclei ATAC chromatin data.
 
-General processing (filtering, normalization, preparation for InferCNV): _processAtacTumorSampleSV4.R_
+General processing (filtering, normalization, preparation for InferCNV) per sample: [processAtacTumorSampleSV4.R](snATACseq/processAtacTumorSampleSV4.R)
 
-Merged samples processing (UMAPs): _mergeAtac.R_
+Merged samples processing (UMAPs): [mergeAtac.R](snATACseq/mergeAtac.R)
 
-R session details: _sessionInfo.ATAC.txt_
+R session details: [sessionInfo.ATAC.txt](snATACseq/sessionInfo.ATAC.txt)
 
 ### scSpatial ###
 
