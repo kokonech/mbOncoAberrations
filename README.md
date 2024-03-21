@@ -1,4 +1,5 @@
-This repository contains R/Python source code for the data analysis in the context of a study focused on investigation of oncogenic aberrations in medulloblastoma Group 3/4 brain tumors.
+This repository contains R/Python source code for the data analysis in the context of a study focused on investigation of oncogenic aberrations in medulloblastoma Group 3/4 brain tumors:  ["Medulloblastoma oncogene aberrations are not involved in tumor initiation, but essential for disease progression and therapy resistance"](https://www.biorxiv.org/content/10.1101/2024.02.09.579690v1) 
+
 The folders are constructed based on the analysis of specific data types.
 
 ## Directory contents ##
