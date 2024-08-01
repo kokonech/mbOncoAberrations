@@ -147,6 +147,34 @@ mutation.time.eca[earliest.mutation.time$Sample,]$Max <- earliest.mutation.time$
 
 quantile(mutation.time.eca$Mean, na.rm=T)/3.3/10^3
 
+# compute some stats about the ECA
+
+pdf(paste0(output.directory, "ECA_stats.pdf"), width=2, height=2.5, useDingbats = F)
+## How many group3/4 tumors show evidence for an ECA?
+nrow(mutation.time.eca[!is.na(mutation.time.eca$Mean) & rownames(mutation.time.eca) %in% group34.tumors,])
+## How many CNVs map to ECA?
+tmp <- unlist(lapply(mrca.eca[group34.tumors], function(x){length(x$gains.uniquely.mapped.to.eca)})) 
+mean(tmp[tmp!=0])
+range(tmp[tmp!=0])
+
+ggplot(data.frame(N_early = tmp[tmp!=0]), aes(x = "G3/4", y = N_early)) + geom_boxplot() + geom_beeswarm() +
+  scale_x_discrete(name = "") + scale_y_continuous(name = "Number of early CNVs") + expand_limits(y=0)
+
+## How many group3/4 tumors show evidence for an ECA but not all CNVs agree to ECA or MRCA?
+tmp <- unlist(lapply(mrca.eca[group34.tumors], function(x){(length(x$gains.not.maping.to.eca.or.mrca) +
+                                                              length(x$gains.at.earliest.time)+
+                                                              length(x$gains.not.mapping.to.earliest.time))/
+    (length(x$gains.not.maping.to.eca.or.mrca)+
+       length(x$gains.uniquely.mapped.to.eca) +
+       length(x$gains.at.earliest.time)+
+       length(x$gains.not.mapping.to.earliest.time))}))
+tmp <- tmp[!is.na(mutation.time.eca[names(tmp),"Mean"])]
+table(tmp)
+
+ggplot(data.frame(Percent_in_ECA = (1-tmp)*100), aes(x = "G3/4", y = Percent_in_ECA)) + geom_boxplot() + geom_beeswarm() +
+  scale_x_discrete(name = "") + scale_y_continuous(name = "% early CNVs in ECA") + expand_limits(y=0)
+
+dev.off()
 
 ##############################################################################################################################################
 ## Plot the mutation density distribution
