@@ -128,7 +128,7 @@ d=\sum_k \sum_f(F_{k,\mathrm{sim}} - F_{k,\mathrm{exp}})^2 \frac{g_k}{\sum_{k'}g
 &nbsp;&nbsp;&nbsp;&nbsp;**DONE** <br />
 **DONE**
 
-The model fits were integrated with the script [Compute_evolutionary_parameters_from_growth_model.R](WGS/PopGen/Compute_evolutionary_parameters_from_growth_model.R) and visualized with the script [Plot_dynamic_model.R](WGS/PopGen/Plot_dynamic_model.R), generating **Fig. 3e,f,g** and **Extended Data Fig. 3g**. Individual model fits to the subclonal tail can be visualized with the script [Plot_neutral_fit.R](WGS/PopGen/Plot_neutral_fit.R).
+The model fits were integrated with the script [Compute_evolutionary_parameters_from_growth_model.R](WGS/PopGen/Compute_evolutionary_parameters_from_growth_model.R) and visualized with the script [Plot_dynamic_model.R](WGS/PopGen/Plot_dynamic_model.R), generating **Fig. 3e,f,g** and **Extended Data Fig. 6l**. Individual model fits to the subclonal tail can be visualized with the script [Plot_neutral_fit.R](WGS/PopGen/Plot_neutral_fit.R).
 
 
 #### Oncoprint ####
