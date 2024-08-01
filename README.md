@@ -54,7 +54,7 @@ The script [Cohort_characteristics.R](WGS/Cohort_characteristics.R) plots the di
 
 #### Mutation timing ####
 
-SNV densities were quantified with the script [Mutation_density_quantification.R](WGS/SNVdensities/Mutation_density_quantification.R). Run [Adjust_purity.R](WGS/Adjust_purity.R) first to collect all ploidies and purities along the cohort and adjust the purity in cases where it could not be estimated by ACEseq. The script [Mutation_density_quantification.R](WGS/SNVdensities/Mutation_density_quantification.R) generates the plots shown in **Extended Data Fig. 3b-e** and **Fig. 3b and d**.
+SNV densities were quantified with the script [Mutation_density_quantification.R](WGS/SNVdensities/Mutation_density_quantification.R). Run [Adjust_purity.R](WGS/Adjust_purity.R) first to collect all ploidies and purities along the cohort and adjust the purity in cases where it could not be estimated by ACEseq. The script [Mutation_density_quantification.R](WGS/SNVdensities/Mutation_density_quantification.R) generates the plots shown in **Extended Data Fig. 3b-e**, **Fig. 3b and d**, and the statistics shown in **Fig. 3i,j**.
 
 #### Population-genetics modeling ####
 
@@ -133,7 +133,7 @@ The model fits were integrated with the script [Compute_evolutionary_parameters_
 
 #### Oncoprint ####
 
-Significantly enriched large-scale CNVs were identified with the script [Gains_and_losses.R](\WGS/Oncoprint/Gains_and_losses.R) (which generates **Extended Data. Fig. 7a**). The regions were then integrated with the timing information in the script [CNV_timing_overview.R](WGS/Oncoprint/CNV_timing_overview.R, which also generates **Extended Data Fig. 7b**). Finally, the script [Driver_mutations.R](WGS/Oncoprint/Driver_mutations.R) generates the oncoprint in **Fig. 3h** and the statistics shown in **Fig. 3i,j**.
+Significantly enriched large-scale CNVs were identified with the script [Gains_and_losses.R](\WGS/Oncoprint/Gains_and_losses.R) (which generates **Extended Data. Fig. 7a**). The regions were then integrated with the timing information in the script [CNV_timing_overview.R](WGS/Oncoprint/CNV_timing_overview.R, which also generates **Extended Data Fig. 7b**). Finally, the script [Driver_mutations.R](WGS/Oncoprint/Driver_mutations.R) generates the oncoprint in **Fig. 3h**.
 
 
 
