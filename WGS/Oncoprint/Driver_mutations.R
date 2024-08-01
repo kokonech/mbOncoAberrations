@@ -365,8 +365,8 @@ for(i in 1:nrow(mat)){
     mat[i,intersect(tumors, as.character(amplifications[amplifications$gene==goi,]$Sample))] <- paste(mat[goi,intersect(tumors, as.character(amplifications[amplifications$gene==goi,]$Sample))], "AMP", sep=";")
     mat[i,as.character(translocations[(translocations$gene1==goi | translocations$gene2==goi) &
                                         translocations$Sample %in% tumors,]$Sample)] <- 
-      paste(mat[goi,as.character(translocations[(translocations$gene1==i | translocations$gene2==goi) & translocations$Sample %in% tumors,]$Sample)], translocations[(translocations$gene1==goi | translocations$gene2==goi)&
-                                                                                                                                                              translocations$Sample %in% tumors,]$SV, sep=";")
+      paste(mat[goi,as.character(translocations[(translocations$gene1==goi | translocations$gene2==goi) & translocations$Sample %in% tumors,]$Sample)], translocations[(translocations$gene1==goi | translocations$gene2==goi)&
+                                                                                                                                                                         translocations$Sample %in% tumors,]$SV, sep=";")
 }
 
 
@@ -495,8 +495,8 @@ for(i in 1:nrow(mat.clonal)){
   mat.clonal[i,intersect(tumors, as.character(deletions[deletions$gene==goi,]$Sample))] <- paste(mat.clonal[i,intersect(tumors, as.character(deletions[deletions$gene==goi,]$Sample))], "n.d.", sep=";")
   mat.clonal[i,intersect(tumors, as.character(amplifications[amplifications$gene==goi,]$Sample))] <- paste(mat.clonal[goi,intersect(tumors, as.character(amplifications[amplifications$gene==goi,]$Sample))], "n.d.", sep=";")
   mat.clonal[i,as.character(translocations[(translocations$gene1==goi | translocations$gene2==goi) &
-                                      translocations$Sample %in% tumors,]$Sample)] <- 
-    paste(mat.clonal[goi,as.character(translocations[(translocations$gene1==i | translocations$gene2==goi) & translocations$Sample %in% tumors,]$Sample)], "n.d.", sep=";")
+                                             translocations$Sample %in% tumors,]$Sample)] <- 
+    paste(mat.clonal[goi,as.character(translocations[(translocations$gene1==goi | translocations$gene2==goi) & translocations$Sample %in% tumors,]$Sample)], "n.d.", sep=";")
 }
 
 
@@ -727,56 +727,3 @@ oncoPrint(mat.g3g4.clonal,
 
 dev.off()
 
-##############################################################################################################################################
-## Summary statistics: number of clonal events per tumor; stratified by small mutation or CNV
-
-to.plot <- rbind(data.frame(Clonal = apply(mat.g3g4.clonal[rownames(cnv.mat.g3g4),], 2, function(x){
-  sum((grepl("clonal", x) & !grepl("subclonal", x)) | grepl("MRCA", x) | grepl("ECA", x) )}), 
-  Subclonal = apply(mat.g3g4.clonal[rownames(cnv.mat.g3g4),], 2, function(x){
-    sum(grepl("subclonal", x))}),Type = "CNV",
-  NoData = apply(mat.g3g4.clonal[rownames(cnv.mat.g3g4),], 2, function(x){
-    sum(grepl("n.d.", x))}),
-  ID = colnames(mat.g3g4.clonal)),
-  data.frame(Clonal = apply(mat.g3g4.clonal[setdiff(rownames(mat.g3g4.clonal),rownames(cnv.mat.g3g4)),], 
-                            2, function(x){
-    sum((!grepl("SC", x) & grepl("C", x)) | (!grepl("subclonal", x) & grepl("clonal", x)))}), 
-    Subclonal = apply(mat.g3g4.clonal[setdiff(rownames(mat.g3g4.clonal),rownames(cnv.mat.g3g4)),], 
-                   2, function(x){
-                     sum(grepl("SC", x) | grepl("subclonal", x))}), Type = "small mutation",
-    NoData = apply(mat.g3g4.clonal[setdiff(rownames(mat.g3g4.clonal),rownames(cnv.mat.g3g4)),], 
-                      2, function(x){
-                        sum((!grepl("C", x) & grepl("n.d.", x)) | (!grepl("clonal", x) & grepl("n.d.", x)))}),
-    ID = colnames(mat.g3g4.clonal)))
-
-to.plot <- reshape2::melt(to.plot, id.vars=c("Type", "ID"))
-  
-pdf(paste0(output.directory, "Clonal_drivers_G3G4.pdf"), width=5, height=4, useDingbats = F)
-
-ggplot(to.plot, aes(x=variable, y=value, col=Type)) + geom_boxplot() + 
-  scale_color_manual(values = c(CNV = "orange", `small mutation` = "violet")) +
-  scale_y_continuous("Count per tumor") + stat_compare_means(paired = T, method = "wilcox.test", size=2)
-
-# do stratified by ECA yes/no
-to.plot$ECA <- ifelse(to.plot$ID %in% rownames(mutation.time.eca[!is.na(mutation.time.eca$Mean),]),
-                      "ECA", "no ECA")
-
-ggplot(to.plot, aes(x=variable, y=value, col=Type)) + geom_boxplot() + 
-  scale_color_manual(values = c(CNV = "orange", `small mutation` = "violet")) +
-  scale_y_continuous("Count per tumor") + stat_compare_means(paired = T, method = "wilcox.test", size=2) +
-  facet_wrap(~ECA, nrow=2, scales = "free") 
-
-# number of tumors with 1, 2, 3, ... clonal CNV
-
-to.plot.2 <- rbind(data.frame(Count = seq(0, 10), N_tumors = sapply(seq(0, 10), function(x){
-  sum(to.plot[to.plot$variable=="Clonal" & to.plot$Type=="CNV",]$value == x)}),
-  Type = "CNV"
-), data.frame(Count = seq(0, 10), N_tumors = sapply(seq(0, 10), function(x){
-  sum(to.plot[to.plot$variable=="Clonal" & to.plot$Type=="small mutation",]$value == x)}),
-  Type = "small mutation"
-))
-
-ggplot(to.plot.2, aes(x=Count, y=N_tumors, col=Type)) + geom_point() + geom_line() +
-  scale_color_manual(values = c(CNV = "orange", `small mutation` = "violet")) +
-  scale_x_continuous("Number of clonal drivers") + scale_y_continuous("Number of tumors")
-
-dev.off()
