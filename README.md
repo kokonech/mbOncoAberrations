@@ -46,7 +46,7 @@ R session details: [sessionInfo.spatial.txt](scSpatial/sessionInfo.spatial.txt)
 
 ### WGS ###
 
-This folder contains scripts to reproduce the WGS analysis. To start with, adjust the paths and directories in [Settings.R](WGS/Settings.R). Install the missing libraries as listed in [Settings.R](WGS/Settings.R). In particular, install the R package [NBevolution](https://github.com/VerenaK90/Neuroblastoma_evolution/tree/main/NBevolution_0.0.0.9000.tar.gz). Then source `Settings.R`. Take care that all input and output directories exist.
+This folder contains scripts to reproduce the WGS analysis. To start with, download the data from Mendeley (doi: 10.17632/zrrrs3cbt6.1), adjust the paths and directories in [Settings.R](WGS/Settings.R) and provide Extended Data Table 3 in the folder "Meta_data". Install the missing libraries as listed in [Settings.R](WGS/Settings.R). In particular, install the R package [NBevolution](https://github.com/VerenaK90/Neuroblastoma_evolution/tree/main/NBevolution_0.0.0.9000.tar.gz). Then source `Settings.R`. Take care that all input and output directories exist.
 
 #### Cohort overview ####
 
@@ -133,7 +133,7 @@ The model fits were integrated with the script [Compute_evolutionary_parameters_
 
 #### Oncoprint ####
 
-Significantly enriched large-scale CNVs were identified with the script [Gains_and_losses.R](\WGS/Oncoprint/Gains_and_losses.R) (which generates **Extended Data. Fig. 3h**). The regions were then integrated with the timing information in the script [CNV_timing_overview.R](WGS/Oncoprint/CNV_timing_overview.R). Finally, the script [Driver_mutations.R](WGS/Oncoprint/Driver_mutations.R) generates the oncoprint in **Fig. 3h** and the statistics shown in **Fig. 3i-l**.
+Significantly enriched large-scale CNVs were identified with the script [Gains_and_losses.R](\WGS/Oncoprint/Gains_and_losses.R) (which generates **Extended Data. Fig. 7a**). The regions were then integrated with the timing information in the script [CNV_timing_overview.R](WGS/Oncoprint/CNV_timing_overview.R, which also generates **Extended Data Fig. 7b**). Finally, the script [Driver_mutations.R](WGS/Oncoprint/Driver_mutations.R) generates the oncoprint in **Fig. 3h** and the statistics shown in **Fig. 3i,j**.
 
 
 
