@@ -64,3 +64,120 @@ for(i in 1:nrow(cnv.mat.g3g4)){
   # }
   cnv.mat.g3g4[i,tmp$ID] <- timing
 }
+
+
+# Also plot for each of these CNVs the absolute mutation timing relative to the MRCA
+
+p <- list()
+col_clonal <- c( time.colors, "ECA/MRCA" = "violet", "-" = "grey")
+
+
+for(i in sort(rownames(cnv.mat.g3g4))){
+  type = gsub("\\ .*", "", i)
+  arm = strsplit(i, split=" ")[[1]][2]
+  if(arm == "whole"){
+    arm <- "both arms"
+  }else if(arm == "q-arm"){
+    arm <- "q arm"
+  }else if(arm == "p-arm"){
+    arm <- "p arm"
+  }
+  chr = strsplit(i, split=" ")[[1]][3]
+  
+  tmp <- cnv.summary[cnv.summary$Chr == chr & cnv.summary$CNV == tolower(type) &
+                       cnv.summary$Arm == arm & cnv.summary$ID %in% g3g4.tumors, ]
+  if(nrow(tmp)==0){next}
+  
+  # now, get for each gain the mutation timing with lower and upper bounds
+  
+  tmp$SNV_density <- apply(tmp, 1, function(x){
+    if(is.na(x["CN"])){return(NA)}
+    if(x["CN"] > 4){return(NA)}
+    tmp2 <- mutation.time[[x["ID"]]]
+    tmp2 <- tmp2[grepl(paste("chr", x["Chr"], sep="_"), as.character(tmp2$Segment)),,drop=F]
+    tmp2 <- tmp2[sapply(as.character(tmp2$Segment), function(y){
+      strsplit(y, split="_")[[1]][4] != "I"
+    }),,drop=F]
+    mean(tmp2$Mean/3.3/10^3)
+  })
+  
+  tmp$SNV_density_lower <- apply(tmp, 1, function(x){
+    if(is.na(x["CN"])){return(NA)}
+    if(x["CN"] > 4){return(NA)}
+    tmp2 <- mutation.time[[x["ID"]]]
+    tmp2 <- tmp2[grepl(paste("chr", x["Chr"], sep="_"), as.character(tmp2$Segment)),,drop=F]
+    tmp2 <- tmp2[sapply(as.character(tmp2$Segment), function(y){
+      strsplit(y, split="_")[[1]][4] != "I"
+    }),,drop=F]
+    mean(tmp2$Min/3.3/10^3)
+  })
+  
+  tmp$SNV_density_upper <- apply(tmp, 1, function(x){
+    if(is.na(x["CN"])){return(NA)}
+    if(x["CN"] > 4){return(NA)}
+    tmp2 <- mutation.time[[x["ID"]]]
+    tmp2 <- tmp2[grepl(paste("chr", x["Chr"], sep="_"), as.character(tmp2$Segment)),,drop=F]
+    tmp2 <- tmp2[sapply(as.character(tmp2$Segment), function(y){
+      strsplit(y, split="_")[[1]][4] != "I"
+    }),,drop=F]
+    mean(tmp2$Max/3.3/10^3)
+  })
+  
+  tmp$MRCA <- sapply(tmp$ID, function(x){mrca.eca[[x]]$mutation.time.mrca/3.3/10^3})
+  tmp$MRCA_lower <- sapply(tmp$ID, function(x){mrca.eca[[x]]$mutation.time.mrca.lower/3.3/10^3})
+  tmp$MRCA_upper <- sapply(tmp$ID, function(x){mrca.eca[[x]]$mutation.time.mrca.upper/3.3/10^3})
+  
+  tmp$Assignment <- apply(tmp, 1, function(x){
+    if(is.na(x["CN"])){return(NA)}
+    if(x["CN"] > 4){return(NA)}
+    tmp2 <- mrca.eca[[x["ID"]]]$p.values.mrca
+    tmp2 <- tmp2[grepl(paste("chr", x["Chr"], sep="_"), rownames(tmp2)),,drop=F]
+    tmp2 <- tmp2[sapply(rownames(tmp2), function(y){
+      strsplit(y, split="_")[[1]][4] != "I"
+    }),,drop=F]
+    mrca <- any(tmp2$adj.p >= 0.01)
+    tmp2 <- mrca.eca[[x["ID"]]]$p.values.eca
+    if(length(tmp2)>0){
+      tmp2 <- tmp2[grepl(paste("chr", x["Chr"], sep="_"), rownames(tmp2)),,drop=F]
+    }else{
+      if(mrca){
+        return("MRCA")
+      }else(return("-"))
+    }
+    if( nrow(tmp2)>0){
+      tmp2 <- tmp2[sapply(rownames(tmp2), function(y){
+        strsplit(y, split="_")[[1]][4] != "I"
+      }),,drop=F]
+    }
+    if(nrow(tmp2)>0){
+      eca <- any(is.na(tmp2$adj.p) | tmp2$adj.p >= 0.01)
+      if(eca & mrca){
+        "ECA/MRCA"
+      }else if(eca){
+        "ECA"
+      }else if(mrca){
+        "MRCA"
+      }else("-")
+    }else{
+      if(mrca){
+        "MRCA"
+      }else("-")
+    }
+    
+  })
+  
+  p[[length(p) + 1]] <- ggplot(tmp, aes(x = SNV_density, xmin = SNV_density_lower, xmax = SNV_density_upper,
+                                        y = MRCA, ymin = MRCA_lower, ymax = MRCA_upper, col = Assignment)) + geom_point() +
+    geom_errorbar(width = 0) + geom_errorbarh(height = 0) + scale_color_manual(values = col_clonal) +
+    geom_abline(slope = 1, intercept = 0, linetype = 2) + scale_x_continuous(name = "SNV density at chromosomal gain") +
+    scale_y_continuous(name = "SNV density at MRCA") + ggtitle(i) +
+    expand_limits(x = 0, y = 0) + theme(aspect.ratio = 1)
+  
+}
+
+
+pdf(paste0(output.directory, "/CNV_timing_per_segment.pdf"), width=8, height=5, useDingbats = F)
+
+ggarrange(plotlist = p, nrow = 3, ncol = 5, common.legend = T)
+
+dev.off()
