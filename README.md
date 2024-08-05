@@ -151,7 +151,7 @@ The model fits were integrated with the script [Compute_evolutionary_parameters_
 | ------------- | ------------------------------------------- | -- | ----- | -- | --- |
 | $`\mu`$  | Number of SSNVs per division  | 1 | uniform | 0.1 | 20 |
 | $`\frac{\delta_\mathrm{T}}{\lambda_\mathrm{T}}`$  | Relative loss during tumor growth  | 1 | uniform | $0$ | $0.99$ |
-| $`\Delta_\rho`$ | Adjustment of the estimated purity ($`\plusminus`$) | 1 | uniform | -0.05 | 0.05 |
+| $`\Delta_\rho`$ | Adjustment of the estimated purity ($`\pm`$) | 1 | uniform | -0.05 | 0.05 |
 | $`n_{clonal}`$ | Number of clonal variants | 1 | uniform | 0 | 10000 |
 
 #### Oncoprint ####
