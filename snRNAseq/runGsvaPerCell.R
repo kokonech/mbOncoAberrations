@@ -7,18 +7,21 @@ args =  commandArgs(trailingOnly=TRUE)
 if (length(args) == 0) {
     stop("Input data is is not provided.", call.=FALSE)
 } else {
-    sId  = args[1]
+    inFile  = args[1] # rds seurat file
 }
+
+snResDir = paste0(dirname(inFile),"/")
+sId = gsub("_obj.RDS","",basename(inFile))
+print(paste("Processing:",sId))
+mb <- readRDS(inFile)
 
 
 print("Load reference")
 
+scriptDir = Sys.getenv("SRC")
+print(paste("SRC dir:",scriptDir))
 refId = "MB_programs_Hov"
-refData <- "/b06x-isilon/b06x-m/mbCSF/results/humanTumor/mbSpatial/ann/MB_Hovestadt_groups.symbols.gmt"
-
-#refId = "MB_programs_Riemondy"
-#refData <- "/b06x-isilon/b06x-m/mbCSF/results/humanTumor/mbSpatial/ann/MB_programs_Riemondy.symbols.top100.gmt"
-
+refData <- paste0(scriptDir,"/ann/MB_Hovestadt_groups.symbols.gmt")
 
 # load gene list 
 gDf <- read.delim(refData, header = F,row.names = 1)
@@ -31,12 +34,6 @@ for (i in 1:nrow(gDf)) {
   genes <- genes[ genes != ""]
   gList[[i]]   <- genes
 }
-
-print(paste("Processing:",sId))
-
-snResDir = "/b06x-isilon/b06x-m/mbCSF/results/humanTumor/mbSpatial/perSampleV2/"
-inFile = paste0(snResDir, sId,"_obj.RDS")
-mb <- readRDS(inFile)
 
 # Normalized
 targData <- mb@assays$SCT@data

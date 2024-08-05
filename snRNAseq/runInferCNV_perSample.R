@@ -1,5 +1,3 @@
-setwd("/b06x-isilon/b06x-m/mbCSF/results/humanTumor/cnvProfiling/globalInferCNV")
-
 library(infercnv)
 library(config)
 library(stringr)
@@ -30,12 +28,17 @@ if (!is.null(cfg$numClusters)) {
 print(paste("Num tumor clusters:",numClusters)) 
   
 refGroups <- str_split(cfg$refGroups,",")[[1]]
-geneOrderRef = "/omics/odcf/analysis/OE0290_projects/Ependymoma/annotations/cell10x/refdata-cellranger-hg19-1.2.0/genes/genes.inferCNV_ref.sorted.txt"
+
+# assign default gene annotation
+scriptDir = Sys.getenv("SRC")
+print(scriptDir)
+geneOrderRef = paste0(scriptDir,"/ann/hg38_genes_ref.InferCnv.txt")
 
 if (!is.null(cfg$customRef)) {
     print(paste("Assign custom reference:",cfg$customRef))
     geneOrderRef = cfg$customRef
 }
+
 
 # specific:  selected cluster as reference
 infercnv_obj = CreateInfercnvObject(raw_counts_matrix=cfg$countsFile,
@@ -47,17 +50,16 @@ infercnv_obj = CreateInfercnvObject(raw_counts_matrix=cfg$countsFile,
                                     #chr_exclude=c("MT")
 )
 
-#options(scipen = 100) # for subclusters
-
 
 infercnv_obj = infercnv::run(infercnv_obj,
                             # cutoff: 1 for SmartSeq, 0.1 for 10x Genomics
                              cutoff=cfg$cutOff,
                              out_dir=cfg$resName,
                              cluster_by_groups=groupUsage,
+                             cluster_references = FALSE,
                              k_obs_groups =  numClusters, 
                              smooth_method="runmeans",
-                             analysis_mode="subclusters",
+                             # analysis_mode="subclusters", # verification
                              output_format = "pdf", # issue with atac
                              denoise=T,
                              plot_steps=F,
