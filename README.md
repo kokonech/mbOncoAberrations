@@ -50,7 +50,7 @@ This folder contains scripts to reproduce the WGS analysis. To start with, downl
 
 #### Cohort overview ####
 
-The script [Cohort_characteristics.R](WGS/Cohort_characteristics.R) plots the distribution of subtypes that went into the analysis as shown in **Fig. 3a** and **Extende Fig. 3a**. 
+The script [Cohort_characteristics.R](WGS/Cohort_characteristics.R) plots the distribution of subtypes that went into the analysis as shown in **Fig. 3a** and **Extended Fig. 3a**. 
 
 #### Mutation timing ####
 
@@ -61,7 +61,7 @@ SNV densities were quantified with the script [Mutation_density_quantification.R
 This was performed in 2 steps. First, we fit a population-genetics model of tumor initiation to the SNV densities at MRCA in G3/4 tumors. To re-run the analysis, first generate the summary data by sourcing the script [Input_data_MB.R](WGS/PopGen/Input_data_MB.R). In a second step, the model is fit to the data. Here, you need to install [pyABC](https://pyabc.readthedocs.io/en/latest/). The model fit is done by executing the script [Expansion_decay_continuous_evol.py](WGS/PopGen/Expansion_decay_continuous_evol.py), which sources the script [Expansion_decay_continuous_evol.R](WGS/PopGen/Expansion_decay_continuous_evol.R), which, in turn, sources the script [ABC.R](WGS/PopGen/ABC.R). Parameter estimation is performed according to the following pseudo-code:
 
 **FOR EACH** optimization step: 
-- Sample a parameter set from the prior probabilities given in Extended Data Table 6 
+- Sample a parameter set from the prior probabilities given in Table 1 below 
 - Sample for each tumor a time point of the MRCA, $t_2$, using the function `Sample.timepoint()` from NBevolution (the function accounts for an overall incidence of $10^{–5}$). 
 - Sample for each tumor a time point of the ECA, $t_1$ using the function `Sample.timepoint.eca()` from NBevolution. 
 - Sample for each tumor a neutral mutation count at ECA and MRCA using the function `Sample.mutations()` from NBevolution. Determine the mutation density by dividing with the haploid genome length of 3.3× 10^9, yielding $`\tilde{m}_\mathrm{MRCA,sim}$ and $\tilde{m}_\mathrm{ECA,sim}`$.
@@ -88,6 +88,21 @@ I_{\mathrm{MRCA,exp},i} =\sum_{\tilde{m}_\mathrm{MRCA,exp}} < i ; i \in \tilde{m
 
 **DONE**
 
+**Table 1. Prior probabilities to model medulloblastoma initiation**
+
+| Parameter  | Description | Unit | Distribution | Min | Max |
+| ------------- | ------------------------------------------- | -- | ----- | -- | --- |
+| $`\delta_1`$  | Relative loss rate during tissue expansion  | 1 | uniform | 0 | 0.9 |
+| $`N`$  | Number of cells in tissue at peak  | 1 | log-uniform | $`10^3`$ | $`10^9`$ |
+| $`\delta_2`$ | Relative loss rate during tissue contraction | 1 | uniform | 1.0001 | 1.5 |
+| $`r`$ | Reduction in cell loss due to first driver | 1 | uniform | 0 | 0.999 |
+| $`\nu_2`$ | Survival probability attributed to 2nd driver | 1 | uniform | 0.01 | 0.49 |
+| $`\mu_{D1}`$ | Mutation rate 1st driver | 1 | log-uniform | $`10^{-9}`$ | $`10^{-4}`$ |
+| $`\mu_{D2}`$ | Mutation rate 2nd driver | 1 | log-uniform | $`10^{-9}`$ | $`10^{-4}`$ |
+| $`\mu`$ | Neutral mutation rate | 1/division | uniform | 1 | 15 |
+
+
+
 In the second step, we fit a model of tumor growth to the subclonal tail of 39 Group3/4 medulloblastomas with sufficient data quality. To reproduce this part, run [Neutral_fit_pre_clonal_and_clonal.py](WGS/PopGen/Neutral_fit_pre_clonal_and_clonal.py) in conjunction with [Mutation_accumulation_fit_pre_clonal_and_clonal.R](WGS/PopGen/Mutation_accumulation_fit_pre_clonal_and_clonal.R) and [Mutation_accumulation_exponential_growth.R](WGS/PopGen/Mutation_accumulation_exponential_growth.R). The fitting procedure encompasses the following steps:
 
 1.	Compute summary statistics from measured data:
@@ -104,7 +119,7 @@ In the second step, we fit a model of tumor growth to the subclonal tail of 39 G
 2. Fit the model to the data: 
 
 **FOR EACH** optimization step:<br />
-- Sample values for $`\mu, \frac{\delta_\mathrm{T}}{\lambda_\mathrm{T}}, n_\mathrm{clonal}`$ and $\Delta_\rho$ from the prior distributions given in Extended Data Table 7, where $\Delta_\rho$ is a correction factor to the purity estimate by ACEseq.<br />
+- Sample values for $`\mu, \frac{\delta_\mathrm{T}}{\lambda_\mathrm{T}}, n_\mathrm{clonal}`$ and $\Delta_\rho$ from the prior distributions given in Table 2 below, where $\Delta_\rho$ is a correction factor to the purity estimate by ACEseq.<br />
 &nbsp;&nbsp;&nbsp;&nbsp;**FOR EACH** copy number state $1\le k \le 4$:__
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**IF** $g_k<10^8$ bp, where $g_k$ is the length of the genome at copy number $k$:<br />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**NEXT**<br />
@@ -130,6 +145,14 @@ d=\sum_k \sum_f(F_{k,\mathrm{sim}} - F_{k,\mathrm{exp}})^2 \frac{g_k}{\sum_{k'}g
 
 The model fits were integrated with the script [Compute_evolutionary_parameters_from_growth_model.R](WGS/PopGen/Compute_evolutionary_parameters_from_growth_model.R) and visualized with the script [Plot_dynamic_model.R](WGS/PopGen/Plot_dynamic_model.R), generating **Fig. 3e,f,g** and **Extended Data Fig. 6l**. Individual model fits to the subclonal tail can be visualized with the script [Plot_neutral_fit.R](WGS/PopGen/Plot_neutral_fit.R).
 
+**Table 2. Prior probabilities to model medulloblastoma growth**
+
+| Parameter  | Description | Unit | Distribution | Min | Max |
+| ------------- | ------------------------------------------- | -- | ----- | -- | --- |
+| $`\mu`$  | Number of SSNVs per division  | 1 | uniform | 0.1 | 20 |
+| $`\frac{\delta_\mathrm{T}}{\lambda_\mathrm{T}}`$  | Relative loss during tumor growth  | 1 | uniform | $0$ | $0.99$ |
+| $`\Delta_\rho`$ | Adjustment of the estimated purity ($`\plusminus`$) | 1 | uniform | -0.05 | 0.05 |
+| $`n_{clonal}`$ | Number of clonal variants | 1 | uniform | 0 | 10000 |
 
 #### Oncoprint ####
 
