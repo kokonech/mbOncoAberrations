@@ -11,34 +11,42 @@ options(stringsAsFactors=FALSE)
 ##### MAIN ANALYSIS
 
 
-resDir = "/b06x-isilon/b06x-m/mbCSF/results/humanTumor/mbSpatial/atacPerSample/"
-
-
 args =  commandArgs(trailingOnly=TRUE)
 
 if (length(args) < 1) {
   stop("Input data is is not provided.", call.=FALSE)
 } else {
     sId = args[1]
+    dataPath = args[2]
 }
 
 
 print(paste("Sample ID:", sId))
-sInfo = read.delim("/b06x-isilon/b06x-m/mbCSF/scripts/tumorAnalysis/atacSeq/MB_targ_cohort.auto.txt",header=F)
-colnames(sInfo) <- c("sId","mId")
-rownames(sInfo) <- sInfo$sId
 
-mId = sInfo[sId,"mId"]
-adjId = gsub("MSM","MSN", mId)
-
-# for full path
-dataPath = paste0("/omics/odcf/analysis/OE0290_projects/mb_10x/ATACana/snMULTI/",pathId, "/outs/")
+resDir = Sys.getenv("ONCO_AB_RESDIR")
+if (nchar(resDir) > 0) {
+    resDir = paste0(resDir, "/")
+}
+print(paste("Result dir:", resDir))
 
 print(paste("Input data:", dataPath))
 
 if (!(file.exists(dataPath))) {
     print("Error! Data not found, exiting...")
     quit(save = "no",status=1)   
+}
+
+
+TARG="cnvBlock" # could be adjusted based on annotation
+targColumn = "seurat_clusters" # default
+
+if (length(args) > 2) {
+  annData <- read.delim(args[3])
+  if (! (TARG %in% colnames(annData) ) ) {
+    stop(paste("Error! Required annotation column is not available:", TARG))
+  }
+  print(paste("Using target annoitation column:",TARG))
+  targColumn = TARG
 }
 
 print("Read initial data...")
@@ -67,36 +75,41 @@ mb <- CreateSeuratObject(
 
 print("Start analysis...")
 
-mb <- NucleosomeSignal(mb)
-mb <- TSSEnrichment(mb)
+if (!is.null(annData)) {
+    cIds = intersect(rownames(annData), rownames(mb@meta.data))
+    if (length(cIds) == 0) {
+        print("Error: no overlapping cells IDs in annotation")
+    }
+    print("Adjust for custom annoitation")
+    mb <- mb[,cIds]
+    mb@meta.data <- cbind(mb@meta.data, annData[cIds,targColumn])
+    colnames(mb@meta.data)[ncol(mb@meta.data)] <- targColumn
+} else {
+    mb <- NucleosomeSignal(mb)
+    mb <- TSSEnrichment(mb)
 
-resName = paste0(resDir, sId,"_VlnPlot_QC.pdf")
-pdf(resName, width=8,height=6)
-VlnPlot(
-  object = mb,
-  features = c("nCount_ATAC", "TSS.enrichment", "nucleosome_signal"),
-  pt.size = 0
-)
-dev.off()
+    resName = paste0(resDir, sId,"_VlnPlot_QC.pdf")
+    pdf(resName, width=8,height=6)
+    VlnPlot(
+        object = mb,
+        features = c("nCount_ATAC", "TSS.enrichment", "nucleosome_signal"),
+        pt.size = 0
+    )
+    dev.off()
 
+    # filter out low quality cells
+    mb <- subset(
+        x = mb,
+        subset = nCount_ATAC < 100000 &
+        nCount_ATAC > 1000 &
+        nucleosome_signal < 2 &
+        TSS.enrichment > 1
+    )
 
-# requires inspection
-# geneLim <- 6000
-# transLim <- 20000
-
-# filter out low quality cells
-mb <- subset(
-  x = mb,
-  subset = nCount_ATAC < 100000 &
-    nCount_ATAC > 1000 &
-    nucleosome_signal < 2 &
-    TSS.enrichment > 1
-)
-
-pdf(paste0(resDir, sId,"_VlnPlot_QC.after_filter.pdf"), width=8, height=6)
-VlnPlot(mb, features = c("nCount_ATAC", "TSS.enrichment", "nucleosome_signal"),     pt.size=0)
-dev.off()
-
+    pdf(paste0(resDir, sId,"_VlnPlot_QC.after_filter.pdf"), width=8, height=6)
+    VlnPlot(mb, features = c("nCount_ATAC", "TSS.enrichment", "nucleosome_signal"),     pt.size=0)
+    dev.off()
+}
 
 print("Normalization...")
 
@@ -121,30 +134,33 @@ mb <- FindClusters(object = mb, verbose = FALSE, algorithm = 3)
 
 pdf(paste0(resDir,sId,"_UMAP.pdf"),width = 8, height = 6)
 DimPlot(object = mb, pt.size=1, label=T)
+if (nchar(targColumn) > 0) {
+  DimPlot(mb, reduction = "umap", label = TRUE,group.by = targColumn)
+}
 dev.off()
 
 
-print("Check snRNA-seq annoitation...")
+#print("Check snRNA-seq annoitation...")
 
-snResDir = "/b06x-isilon/b06x-m/mbCSF/results/humanTumor/mbSpatial/perSampleV2/"
-blocksAnn = paste0(snResDir,sId,".CNV_blocks_ann.txt")
+# requires manual adjustment
 
-if (file.exists(blocksAnn)) {
+#snResDir = "/b06x-isilon/b06x-m/mbCSF/results/humanTumor/mbSpatial/perSampleV2/"
+#blocksAnn = paste0(snResDir,sId,".CNV_blocks_ann.txt")
 
-    cnvAnn <- read.delim(blocksAnn)
-    rownames(cnvAnn) <- gsub(paste0(adjId,"_"), "", paste0(rownames(cnvAnn),"-1"))
-    summary(rownames(mb@meta.data) %in% rownames(cnvAnn))
-    targAnn <- cnvAnn[ intersect(rownames(mb@meta.data) , rownames(cnvAnn)), ]
+#if (file.exists(blocksAnn)) {
 
-    mb$refAnn <- "Unclear"
-    mb@meta.data[ rownames(targAnn) , ]$refAnn <- targAnn$cnvBlock
+#    cnvAnn <- read.delim(blocksAnn)
+#    rownames(cnvAnn) <- gsub(paste0(adjId,"_"), "", paste0(rownames(cnvAnn),"-1"))
+#    summary(rownames(mb@meta.data) %in% rownames(cnvAnn))
+#    targAnn <- cnvAnn[ intersect(rownames(mb@meta.data) , rownames(cnvAnn)), ]
 
-    pdf(paste0(resDir,sId,"_UMAP.ref_CNV_blocks.pdf"),width = 8, height = 6)
-    DimPlot(object = mb, group.by = "refAnn")
-    dev.off()
-}
+#    mb$refAnn <- "Unclear"
+#    mb@meta.data[ rownames(targAnn) , ]$refAnn <- targAnn$cnvBlock
 
-
+#    pdf(paste0(resDir,sId,"_UMAP.ref_CNV_blocks.pdf"),width = 8, height = 6)
+#    DimPlot(object = mb, group.by = "refAnn")
+#    dev.off()
+#}
 
 
 print("Save signal...")
@@ -153,17 +169,22 @@ saveRDS(mb, paste0(resDir,sId,"_obj.RDS" ))
 # mb <- readRDS(paste0(resDir,sId,"_obj.RDS"))
 
 # for InferCNV
+
+annTable <- mb@meta.data
+if (nchar(targColumn) == 0) {
+    annTable2 <- annTable[,"seurat_clusters",drop=F]
+    annTable2$seurat_clusters <- paste0("cl",annTable2$seurat_clusters)
+} else {
+    annTable2 <- annTable[,targColumn,drop=F]
+}
+write.table(annTable2, paste0(resDir,sId,"_ATAC_cnv_ann.txt") ,col.names = F,sep="\t",quote=F)
+
 gz1 <- gzfile(paste0(resDir,sId,"_ATAC_raw_counts.txt.gz"), "w")
 rawCounts <- as.matrix(mb@assays$ATAC@counts)
 
 rawCounts <- rawCounts[ grep("chr",rownames(rawCounts)),]
 write.table(rawCounts,gz1,sep="\t",quote=F)
 close(gz1)
-
-annTable <- mb@meta.data
-annTable2 <- annTable[,"seurat_clusters",drop=F]
-annTable2$seurat_clusters <- paste0("cl",annTable2$seurat_clusters)
-write.table(annTable2, paste0(resDir,sId,"_ATAC_cnv_ann.txt") ,col.names = F,sep="\t",quote=F)
 
 peakRegions <- GRanges(sub("-",":",rownames(rawCounts), fixed=TRUE))
 seqlevels(peakRegions) <- paste0("chr",c(1:22,"X","Y")) # fix order
@@ -193,9 +214,9 @@ mb <- NormalizeData(
 DefaultAssay(mb) <- 'RNA'
 
 
-gList <- read.delim("/b06x-isilon/b06x-m/mbCSF/scripts/tumorAnalysis/spatial/spatial_gene_selection_MB.160322.txt")
 
-spGenes <- gList$Gene[gList$Gene %in% rownames(mb)]
+gList = c("MYCN","MYC","PRDM6","SNCAIP")
+spGenes <- gList[gList %in% rownames(mb)]
 
 pdf(paste0(resDir,sId,"_UMAP.target_genes.pdf"),width = 8, height = 6)
 

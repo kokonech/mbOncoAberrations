@@ -1,6 +1,8 @@
 library(Seurat)
 library(dplyr)
 
+# NOTE: this code depends on server envirnoment with data locations
+
 setwd("/b06x-isilon/b06x-m/mbCSF/results/humanTumor/mbSpatial")
 resDir = "/b06x-isilon/b06x-m/mbCSF/results/humanTumor/mbSpatial/snCombRes/"
 

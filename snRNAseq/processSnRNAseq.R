@@ -5,8 +5,11 @@ library(dplyr)
 library(rprojroot)
 
 resDir <- Sys.getenv("ONCO_AB_RESDIR")
-
+if (nchar(resDir) > 0) {
+    setwd(resDir)
+} 
 print(paste("Result dir:",resDir))
+
 args = commandArgs(trailingOnly=TRUE)
 
 if (length(args) < 2) {
@@ -21,7 +24,7 @@ print("Loading data...")
 inData <- Read10X(inPath)
 annData <- NULL
 
-TARG="cnvBlock" # could be adjusted based on annoitation
+TARG="cnvBlock" # could be adjusted based on annotation
 targColumn = "seurat_clusters" # default
 
 if (length(args) > 2) {
