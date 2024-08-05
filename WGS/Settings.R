@@ -31,7 +31,7 @@ if(!dir.exists(rdata.directory)){
 
 ##############################################################################################################################################
 ## Define samples to use, meta information and colors
-sample.information<- read.xlsx(paste0(meta.data, "Extended Data Table 2.xlsx"), sheet=1)
+sample.information<- read.xlsx(paste0(meta.data, "Extended Data Table 6.xlsx"), sheet=1)
 rownames(sample.information) <- sample.information$MRCA_ID
 tumors <- rownames(sample.information)
 
