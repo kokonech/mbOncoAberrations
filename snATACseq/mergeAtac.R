@@ -1,3 +1,5 @@
+# NOTE: this code depends on server envirnoment with data locations
+
 library(Seurat)
 library(Signac)
 library(dplyr)
