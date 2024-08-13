@@ -48,7 +48,7 @@ R session details: [sessionInfo.spatial.txt](scSpatial/sessionInfo.spatial.txt)
 
 DNA processing (prepare alignment/QC; server jobs; draw CNV results): [list of scripts](resolveBio/dna)
 
-RNA processing (prepare alignment; server jobs (alignment, compute counts); process counts, transfer from 10X snRNAseq): [list of scripts](resolveBio/rna)
+RNA processing (prepare alignment; server jobs for alignment and compute counts; process counts, transfer from 10X snRNAseq): [list of scripts](resolveBio/rna)
 
 
 ### WGS ###
