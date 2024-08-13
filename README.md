@@ -44,6 +44,11 @@ Additional processing with Giotto R package (neigbourhood, etc): [giotoAnalysis.
 
 R session details: [sessionInfo.spatial.txt](scSpatial/sessionInfo.spatial.txt) 
 
+### ResolveOME data ###
+
+DNA processing (prepare alignment/QC; server jobs; draw CNV results): [list of scripts](resolveBio/dna)
+
+RNA processing (prepare alignment; server jobs (alignment, compute counts); process counts, transfer from 10X snRNAseq): [list of scripts](resolveBio/rna)
 
 
 ### WGS ###
