@@ -28,6 +28,8 @@ Merged samples processing (UMAPs): [mergeAtac.R](snATACseq/mergeAtac.R)
 
 Analysis of cis-regulatory elements (subclone-specific, gene assoications,etc): [list of scripts](snATACseq/creAnalysis)
 
+Analysis of mutations (SComatic script, filter somatic based on bulk WGS,  plot results): [list of scripts](snATACseq/mutAnalysis)
+
 R session details: [sessionInfo.ATAC.txt](snATACseq/sessionInfo.ATAC.txt)
 
 ### scSpatial ###
