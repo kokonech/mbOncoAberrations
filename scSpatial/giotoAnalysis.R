@@ -1,4 +1,3 @@
-setwd("/b06x-isilon/b06x-m/mbCSF/results/humanTumor/mbSpatial")
 library(Giotto)
 library(stringr)
 

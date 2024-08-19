@@ -3,15 +3,16 @@ library(dplyr)
 
 # NOTE: this code depends on server envirnoment with data locations
 
-setwd("/b06x-isilon/b06x-m/mbCSF/results/humanTumor/mbSpatial")
 resDir = "/b06x-isilon/b06x-m/mbCSF/results/humanTumor/mbSpatial/snCombRes/"
 
+# text file with prperties of samples
 sInfo <- read.delim("/b06x-isilon/b06x-m/mbCSF/scripts/tumorAnalysis/spatial/MB_MYC_MYCN_PRDM6_cohort.210723.txt")
 sIds <- sInfo$Sample
 rownames(sInfo) <- sIds
 
 
 # requires up to 160 GB RAM
+# reading from per sample result
 grpName = "MB_G34_somatic"
 ob.list <- list()
 for (sId in sIds) {

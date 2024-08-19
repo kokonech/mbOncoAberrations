@@ -19,17 +19,15 @@ sId = blocks[[1]][2]
 
 print("load sample  RB  matrix")
 
-# latest result on the same imsages for all samples
-rbResDir = "/b06x-isilon/b06x-m/mbCSF/results/humanTumor/mbSpatial/cellposeRes/seuratAnalysisR3/"
-
-# results for precise cell border
-#rbResDir = "/b06x-isilon/b06x-m/mbCSF/results/humanTumor/mbSpatial/cellposeRes/seuratAnalysisR3v2/"
+# latest result dir per sample, should be adjusted manually
+rbResDir = "cellposeRes/seuratAnalysisR3/"
 
 rbObj = readRDS(paste0(rbResDir, tId, "_", sId, ".result.rds"))
 
 print("load refrence single cell matrix")
 
-snRNAseqDir = "/b06x-isilon/b06x-m/mbCSF/results/humanTumor/mbSpatial/perSampleV2/"
+# result dir on snRNA-seq data,should be adjusted manually
+snRNAseqDir = "mbSpatial/perSampleV2/"
 adj = "" # default
 if (tId == "MB165") {
     adj ="_v2" # fix for MB165
@@ -43,20 +41,11 @@ if (!(file.exists(targPath)) ) {
 }
 targRefObj <- readRDS(targPath)
 
-refId = "Tumor_prolif_CNV" # manual CNV segments with prolif
-cnvAnn <- read.delim(paste0(snRNAseqDir, tId2,".CNV_prolif_blocks_ann.txt"))
+# assuming CNV clones annoitation already present for snRNA-seq data
 
-
-if (FALSE) {
-
-refId = "Tumor_CNV" # manual CNV segments
+refId = "Tumor_CNV" # main CNV segments
 cnvAnn <- read.delim(paste0(snRNAseqDir, tId2,".CNV_blocks_ann.txt"))
-#}
 
-refId = "Tumor_detailed_CNV" # manual CNV segments with prolif, prog, diff
-cnvAnn <- read.delim(paste0(snRNAseqDir, tId2,".CNV_ABC_blocks_ann.txt"))
-
-}
 
 summary(rownames(cnvAnn) == rownames(targRefObj@meta.data))
 targRefObj@meta.data$cnvBlock <- cnvAnn$cnvBlock

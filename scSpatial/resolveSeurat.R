@@ -1,10 +1,10 @@
 # R 4.2.2
-setwd("/b06x-isilon/b06x-m/mbCSF/results/humanTumor/mbSpatial")
 library(Seurat)
 library(dplyr)
 library(RImageJROI)
 
 # main cohort details : sample ids, image sizes
+# this information is provided in Extended Data Table 8
 fullInfo <- read.delim("/b06x-isilon/b06x-m/mbCSF/scripts/tumorAnalysis/spatial/MB_RB_runs_info.280623.txt")
 
 args =  commandArgs(trailingOnly=TRUE)
@@ -81,7 +81,7 @@ print(mb)
 
 mb@images <- list()
 
-if (FALSE) {
+if (FALSE) { # centroids
 mb@images["cen"] <- CreateFOV(
   coords = cellCoords,
   type = "centroids",
@@ -94,7 +94,7 @@ mb@images["cen"] <- CreateFOV(
   name = NULL)
 }
 
-#if (FALSE) {
+#if (FALSE) { # full coords
 mb@images["seg"] <- CreateFOV(
   coords = cell_roi,
   type = "segmentation",

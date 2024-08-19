@@ -1,11 +1,11 @@
 library(Seurat)
 library(dplyr)
-setwd("/b06x-isilon/b06x-m/mbCSF/results/humanTumor/mbSpatial/cellposeRes")
+
+# NOTE : This code assumes analysis done on all fragments
 
 resDir = "combAnalysis/"
 
-# used for supplementary table
-dataDir = "seuratAnalysisR3v2/"
+dataDir = "seuratAnalysisR3v2/" # per sample output dir
 
 
 extractPseudobulkMatrix <- function(rawTable, annData, clId ) {
@@ -23,30 +23,8 @@ extractPseudobulkMatrix <- function(rawTable, annData, clId ) {
     resTable
 }
 
-geneLengths = read.table("/b06x-isilon/b06x-m/mbCSF/annotation/hg19/hg19_genes.length", header=1)
+# provided in Extended Data Table 8
 
-
-
-convToRpkm <- function(clusterMatrix, geneLengths) {
-    ns=colSums(clusterMatrix)
-    rpkmTable=NULL
-    # issue with different genes
-    commonGenes <- intersect(rownames(clusterMatrix) , rownames(geneLengths))
-    geneLengths <- geneLengths[commonGenes, ,drop=FALSE]
-    clusterMatrix <- clusterMatrix[commonGenes,]
-
-    geneLengths <- geneLengths[row.names(clusterMatrix), ,drop=FALSE]
-    for(i in 1:ncol(clusterMatrix)){
-        rpkmTable = cbind(rpkmTable,
-        round((clusterMatrix[,i]*10^9)/(geneLengths$Length*ns[i]), digits=3))
-    }
-    colnames(rpkmTable) = colnames(clusterMatrix)
-    rownames(rpkmTable) = rownames(clusterMatrix)
-    rpkmTable
-}
- 
-
-# select samples
 fullInfo <- read.delim("/b06x-isilon/b06x-m/mbCSF/scripts/tumorAnalysis/spatial/MB_RB_runs_info.280623.txt", comment.char="#")
 rownames(fullInfo) <- paste0(fullInfo$TUM_ID,"_",fullInfo$RB_ID)
 
