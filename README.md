@@ -55,7 +55,7 @@ RNA processing (prepare alignment; server jobs for alignment and compute counts;
 
 ### WGS ###
 
-This folder contains scripts to reproduce the WGS analysis. To start with, download the data from Mendeley (doi: 10.17632/zrrrs3cbt6.1), adjust the paths and directories in [Settings.R](WGS/Settings.R) and provide Extended Data Table 5 in the folder "Meta_data". Install the missing libraries as listed in [Settings.R](WGS/Settings.R). In particular, install the R package [NBevolution](https://github.com/VerenaK90/Neuroblastoma_evolution/tree/main/NBevolution_0.0.0.9000.tar.gz). Then source `Settings.R`. Take care that all input and output directories exist.
+This folder contains scripts to reproduce the WGS analysis. To start with, download the data from Mendeley (doi: 10.17632/g4r22w9pp8.1), adjust the paths and directories in [Settings.R](WGS/Settings.R) and provide Extended Data Table 5 in the folder "Meta_data". Install the missing libraries as listed in [Settings.R](WGS/Settings.R). In particular, install the R package [NBevolution](https://github.com/VerenaK90/Neuroblastoma_evolution/tree/main/NBevolution_0.0.0.9000.tar.gz). Then source `Settings.R`. Take care that all input and output directories exist.
 
 #### Cohort overview ####
 
