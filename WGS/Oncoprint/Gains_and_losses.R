@@ -231,19 +231,36 @@ for(subtype in c("ALL", "MB, SHH CHL AD" ,"MB, SHH INF" , "MB, WNT", "G3/G4")){
   # highlight significant gains and losses
   
   if(any(lost.probs < 0.05) | any(gain.probs < 0.05)){
-    highlights <- unique(GRanges(c(names(gain.probs[gain.probs < 0.05]), names(lost.probs[lost.probs < 0.05])),
-                                 IRanges(rep(1, sum(gain.probs < 0.05) + sum(lost.probs < 0.05)),
-                                         width = as.numeric(seqlengths(ideoCyto$hg19)[paste0("chr",c(
-                                           names(gain.probs[gain.probs < 0.05]), names(lost.probs[lost.probs < 0.05])
-                                         ))]))))
+    if(any(gain.probs < 0.05)){
+      highlights <- unique(GRanges(c(names(gain.probs[gain.probs < 0.05])),
+                                   IRanges(rep(1, sum(gain.probs < 0.05) ),
+                                           width = as.numeric(seqlengths(ideoCyto$hg19)[paste0("chr",c(
+                                             names(gain.probs[gain.probs < 0.05])
+                                           ))]))))
+      
+      overlaps <- findOverlaps(query = gain.granges, subject = highlights)
+      mcols(gain.granges)$sig <- F
+      mcols(gain.granges)$sig[queryHits(overlaps)] <- T
+      
+    }else{
+      mcols(gain.granges)$sig <- F
+    }
     
-    overlaps <- findOverlaps(query = gain.granges, subject = highlights)
-    mcols(gain.granges)$sig <- F
-    mcols(gain.granges)$sig[queryHits(overlaps)] <- T
-    
-    overlaps <- findOverlaps(query = loss.granges, subject = highlights)
-    mcols(loss.granges)$sig <- F
-    mcols(loss.granges)$sig[queryHits(overlaps)] <- T
+    if(any(lost.probs < 0.05)){
+      highlights <- unique(GRanges(c(names(lost.probs[lost.probs < 0.05])),
+                                   IRanges(rep(1, sum(lost.probs < 0.05)),
+                                           width = as.numeric(seqlengths(ideoCyto$hg19)[paste0("chr",c(
+                                             names(lost.probs[lost.probs < 0.05])
+                                           ))]))))
+      
+      overlaps <- findOverlaps(query = loss.granges, subject = highlights)
+      mcols(loss.granges)$sig <- F
+      mcols(loss.granges)$sig[queryHits(overlaps)] <- T
+      
+    }else{
+      mcols(loss.granges)$sig <- F
+      
+    }
     
     p[[subtype]] <- plotGrandLinear(c(gain.granges, loss.granges), coord="genome", geom="bar", 
                                     ymax=c(gain.granges, loss.granges)$Coverage/length(subset)*100, 
