@@ -344,10 +344,10 @@ to.plot <- cbind(mutation.time.mrca, data.frame(Event="MRCA", PID = rownames(mut
                  Age = sample.information[rownames(mutation.time.mrca),]$Age)
 to.plot$Group <- sample.information[to.plot$PID,]$mnp11
 
-ggplot(to.plot, aes(x=Max/3.3/10^3, as.numeric(Age), col=Group)) + geom_point() +
+ggplot(to.plot, aes(x=Mean/3.3/10^3, as.numeric(Age), col=Group)) + geom_point() +
   scale_color_manual(values=group.colors) + theme(aspect.ratio = 1)
 
-cor.test(to.plot$Max, to.plot$Age)
+cor.test(to.plot$Mean, to.plot$Age)
 
 dev.off()
 
@@ -363,9 +363,9 @@ to.plot$Group <- sample.information[to.plot$PID,]$mnp11
 to.plot <- to.plot[to.plot$Group %in% c("MB, G3", "MB, G4"),]
 to.plot$Subgroup <- sample.information[to.plot$PID,]$mnp12
 
-cor.test(to.plot$Max, to.plot$Age, method="spearman")
+cor.test(to.plot$Mean, to.plot$Age, method="spearman")
 
-ggplot(to.plot[to.plot$Mean < 3.3*10^3,], aes(x=Max/3.3/10^3, as.numeric(Age), col=Subgroup)) + geom_point() +
+ggplot(to.plot[to.plot$Mean < 3.3*10^3,], aes(x=Mean/3.3/10^3, as.numeric(Age), col=Subgroup)) + geom_point() +
   scale_color_manual(values=g34.subgroup.colors) + theme(aspect.ratio = 1)
 
 dev.off()
